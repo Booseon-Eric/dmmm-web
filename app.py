@@ -26,6 +26,48 @@ st.caption(
     "채널별 예산을 재배분해 예상 KPI를 극대화하는 배분안과 리포트를 만들어 드립니다."
 )
 
+# ---------------------------------------------------------------- data format guide
+with st.expander("📋 어떤 데이터를 넣어야 하나요? (CSV 양식 안내)", expanded=True):
+    st.markdown(
+        "아래 4개 컬럼이 있는 CSV가 필요합니다. **컬럼 이름이 달라도** 괜찮아요 — "
+        "사이드바에서 실제 이름을 지정하면 됩니다. 하루에 채널별로 여러 캠페인 행이 "
+        "있어도 자동으로 채널×일자 단위로 합쳐집니다."
+    )
+
+    fmt = pd.DataFrame({
+        "역할": ["날짜", "채널(매체)", "비용", "KPI(목표 지표)"],
+        "기본 컬럼명": ["Date_", "Media", "Cost_", "Install(Total)"],
+        "설명": [
+            "집행 일자 (YYYY-MM-DD)",
+            "광고 매체/채널 이름 (예: naver, google, meta)",
+            "그날 그 채널에 쓴 비용",
+            "늘리고 싶은 성과 지표 (설치·구매·클릭 등)",
+        ],
+        "예시 값": ["2025-01-01", "naver", "150000", "42"],
+    })
+    st.table(fmt)
+
+    st.markdown("**입력 예시** (이렇게 생긴 CSV):")
+    example = pd.DataFrame({
+        "Date_": ["2025-01-01", "2025-01-01", "2025-01-01", "2025-01-02", "2025-01-02"],
+        "Media": ["naver", "google", "meta", "naver", "google"],
+        "Cost_": [150000, 230000, 180000, 145000, 240000],
+        "Install(Total)": [42, 55, 47, 40, 58],
+    })
+    st.dataframe(example, use_container_width=True, hide_index=True)
+
+    st.caption(
+        "· KPI는 하나만 선택하면 됩니다 (설치·매출·가입 등 무엇이든 가능). \n"
+        "· 정확한 분석을 위해 채널별로 최소 몇 주 이상의 데이터가 있으면 좋습니다. \n"
+        "· 형식이 헷갈리면 아래 **‘샘플 데이터로 체험해보기’**를 켜서 실제 결과를 먼저 보세요."
+    )
+
+    if SAMPLE.exists():
+        st.download_button(
+            "⬇️ 샘플 CSV 내려받아 형식 확인하기",
+            SAMPLE.read_bytes(), "sample_data.csv", "text/csv",
+        )
+
 # ---------------------------------------------------------------- sidebar
 with st.sidebar:
     st.header("⚙️ 설정")
